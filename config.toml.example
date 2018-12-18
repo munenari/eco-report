@@ -1,0 +1,6 @@
+# eco report configs
+eco-origin = 'http://my-device'
+password = 'my-device-password'
+filter-value = '{"filter":["db","circuits","pv","sb","fc"]}'
+elastic = 'http://elasticsearch:9200/eco-report/instantdata'
+battery-deviceid = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'

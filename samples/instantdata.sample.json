@@ -1,0 +1,44 @@
+{
+	"circuits": [
+		{
+			"name": "エアコン",
+			"value": 100
+		},
+		{
+			"name": "リビング",
+			"value": 30
+		},
+		{
+			"name": "玄関",
+			"value": 0
+		},
+		{
+			"name": "予備回路",
+			"value": 50
+		}
+	],
+	"pv": {
+		"generate": 50,
+		"sell": 2000000000,
+		"list": [
+			{
+				"makerCode": "0x000000",
+				"generate": 50,
+				"sell": 2000000000,
+				"guid": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+			},
+			{
+				"makerCode": "0x000000",
+				"generate": 0,
+				"sell": 0,
+				"guid": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+			}
+		]
+	},
+	"sb": -700,
+	"db": 60,
+	"fc": {
+		"consumption": 2000000000,
+		"generate": 700
+	}
+}

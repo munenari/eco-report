@@ -1,0 +1,11 @@
+[Unit]
+Description=eco-report-agent
+After=network.target
+
+[Service]
+ExecStart=/path/to/eco-report/eco-report-agent
+WorkingDirectory=/path/to/eco-report
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
