@@ -67,6 +67,10 @@ func getProperties(c *config.EcoReport) (*model.InstantData, *map[string]interfa
 	if err != nil {
 		return nil, nil, err
 	}
+	err = api.Logout(c.Origin, o)
+	if err != nil {
+		return nil, nil, err
+	}
 	return instantData, battery, nil
 }
 
