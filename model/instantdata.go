@@ -30,10 +30,10 @@ type FC struct {
 
 // Device struct
 type Device struct {
-	MakerCode string `json:"makerCode"`
-	Generate  int    `json:"generate"`
-	Sell      int    `json:"sell"`
-	GUID      string `json:"guid"`
+	MakerCode string  `json:"makerCode"`
+	Generate  int     `json:"generate"`
+	Sell      float64 `json:"sell"`
+	GUID      string  `json:"guid"`
 }
 
 // GetCircuitsMap data for easy visualization in kibana

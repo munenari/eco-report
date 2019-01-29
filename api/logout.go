@@ -29,6 +29,6 @@ func Logout(origin string, o *model.OneTimePassword) error {
 	}
 	defer resp.Body.Close()
 	io.Copy(ioutil.Discard, resp.Body)
-	fmt.Println("logouted, status:", resp.StatusCode)
+	// fmt.Println("logouted, status:", resp.StatusCode)
 	return err
 }

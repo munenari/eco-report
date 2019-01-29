@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	tick := time.NewTicker(10 * time.Second)
+	tick := time.NewTicker(20 * time.Second)
 	defer tick.Stop()
 	for ; true; <-tick.C {
 		instantData, batteryData, err := getProperties(c)
