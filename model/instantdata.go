@@ -44,3 +44,20 @@ func (d *InstantData) GetCircuitsMap() *map[string]int {
 	}
 	return &res
 }
+
+// IsValid data it is
+func (d *InstantData) IsValid() bool {
+	tooBig := 1e6
+	values := []int{
+		d.FC.Generate,
+		d.PV.Generate,
+		d.DB,
+		d.SB,
+	}
+	for _, v := range values {
+		if float64(v) > tooBig {
+			return false
+		}
+	}
+	return true
+}

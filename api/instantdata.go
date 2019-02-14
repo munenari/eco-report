@@ -37,5 +37,8 @@ func GetInstantData(origin string, o *model.OneTimePassword, filterValue string)
 	if err != nil {
 		return nil, err
 	}
+	if !i.IsValid() {
+		return nil, fmt.Errorf("invalid instant data, over 1e6 (1,000,000)")
+	}
 	return i, nil
 }
