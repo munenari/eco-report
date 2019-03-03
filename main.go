@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -23,31 +24,38 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	// leak?
 	tick := time.NewTicker(20 * time.Second)
 	defer tick.Stop()
-	for ; true; <-tick.C {
-		instantData, batteryData, err := getProperties(c)
+	for range tick.C {
+		err := execute(c)
 		if err != nil {
-			log.Println("failed to get data from API:", err)
+			log.Println(err)
 			continue
 		}
-		record := make(map[string]interface{})
-		record["time"] = time.Now().UTC()
-		record["instantData"] = instantData
-		record["batteryData"] = batteryData
-		record["instantDataCircuits"] = instantData.GetCircuitsMap()
-		b, err := json.Marshal(record)
-		if err != nil {
-			log.Println("failed to marshal json from result map:", err)
-			continue
-		}
-		err = postJSONData(c.ElasticOrigin, b)
-		if err != nil {
-			log.Println("failed to post data to elasticsearch:", err)
-			continue
-		}
-		log.Println("success to post data", string(b))
 	}
+}
+
+func execute(c *config.EcoReport) error {
+	instantData, batteryData, err := getProperties(c)
+	if err != nil {
+		return fmt.Errorf("failed to get data from API: %s", err)
+	}
+	record := make(map[string]interface{})
+	record["time"] = time.Now().UTC()
+	record["instantData"] = instantData
+	record["batteryData"] = batteryData
+	record["instantDataCircuits"] = instantData.GetCircuitsMap()
+	b, err := json.Marshal(record)
+	if err != nil {
+		return fmt.Errorf("ailed to marshal json from result map: %s", err)
+	}
+	err = postJSONData(c.ElasticOrigin, b)
+	if err != nil {
+		return fmt.Errorf("failed to post data to elasticsearch: %s", err)
+	}
+	log.Println("success to post data", string(b))
+	return nil
 }
 
 func getProperties(c *config.EcoReport) (*model.InstantData, *map[string]interface{}, error) {
