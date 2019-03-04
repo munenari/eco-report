@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -88,5 +90,7 @@ func postJSONData(elasticURL string, b []byte) error {
 	if err != nil {
 		return err
 	}
-	return resp.Body.Close()
+	defer resp.Body.Close()
+	_, err = io.Copy(ioutil.Discard, resp.Body)
+	return err
 }
