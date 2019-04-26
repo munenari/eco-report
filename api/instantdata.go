@@ -28,7 +28,7 @@ func GetInstantData(origin string, o *model.OneTimePassword, filterValue string)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := client.Do(req)
 	if err != nil && err != io.EOF {
-		fmt.Println("http error:", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 	i := new(model.InstantData)

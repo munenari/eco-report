@@ -29,34 +29,49 @@ func main() {
 	// leak?
 	tick := time.NewTicker(20 * time.Second)
 	defer tick.Stop()
+	log.Println("agent started")
 	for range tick.C {
-		err := execute(c)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
+		go func() {
+			if err := execute(c); err != nil {
+				log.Println("\nfailed to get ot post data:", err)
+			} else {
+				fmt.Print(".")
+			}
+		}()
 	}
 }
 
 func execute(c *config.EcoReport) error {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Printf("panic: %+v\n", err)
+		}
+	}()
 	instantData, batteryData, err := getProperties(c)
 	if err != nil {
 		return fmt.Errorf("failed to get data from API: %s", err)
 	}
-	record := make(map[string]interface{})
-	record["time"] = time.Now().UTC()
-	record["instantData"] = instantData
-	record["batteryData"] = batteryData
-	record["instantDataCircuits"] = instantData.GetCircuitsMap()
+	record := map[string]interface{}{
+		"time":                time.Now().UTC(),
+		"instantData":         instantData,
+		"batteryData":         batteryData,
+		"instantDataCircuits": instantData.GetCircuitsMap(),
+	}
 	b, err := json.Marshal(record)
 	if err != nil {
 		return fmt.Errorf("ailed to marshal json from result map: %s", err)
 	}
-	err = postJSONData(c.ElasticOrigin, b)
+	record = nil
+	instantData = nil
+	batteryData = nil
+	r := bytes.NewReader(b)
+	err = postJSONData(c.ElasticOrigin, r)
 	if err != nil {
 		return fmt.Errorf("failed to post data to elasticsearch: %s", err)
 	}
-	log.Println("success to post data", string(b))
+	// log.Printf("success to post data\n%s\n", b)
+	b = nil
+	r = nil
 	return nil
 }
 
@@ -84,13 +99,16 @@ func getProperties(c *config.EcoReport) (*model.InstantData, *map[string]interfa
 	return instantData, battery, nil
 }
 
-func postJSONData(elasticURL string, b []byte) error {
-	r := bytes.NewReader(b)
+func postJSONData(elasticURL string, r io.Reader) error {
 	resp, err := http.Post(elasticURL, "application/json", r)
 	if err != nil {
+		io.Copy(ioutil.Discard, r)
+		r = nil
 		return err
 	}
 	defer resp.Body.Close()
-	_, err = io.Copy(ioutil.Discard, resp.Body)
+	io.Copy(ioutil.Discard, resp.Body)
+	io.Copy(ioutil.Discard, r)
+	r = nil
 	return err
 }

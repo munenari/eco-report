@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/url"
 	"path"
@@ -28,14 +27,11 @@ func GetOneTimePassword(origin string, n *model.Nonce, password string) (*model.
 	u.Path = path.Join(u.Path, "housecontrol/v1/indoorauth/onetimepassword")
 	resp, err := client.Post(u.String(), "application/x-www-form-urlencoded", r)
 	if err != nil && err != io.EOF {
-		fmt.Println("http error:", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 	decorder := json.NewDecoder(resp.Body)
 	p := new(model.OneTimePassword)
 	err = decorder.Decode(p)
-	if err != nil {
-		return nil, err
-	}
-	return p, nil
+	return p, err
 }

@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -28,7 +27,7 @@ func GetBatteryData(origin string, o *model.OneTimePassword, deviceID string) (*
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := client.Do(req)
 	if err != nil && err != io.EOF {
-		fmt.Println("http error:", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 	res := new(map[string]interface{})
