@@ -59,5 +59,10 @@ func (d *InstantData) IsValid() bool {
 			return false
 		}
 	}
+	for _, v := range d.Circuits {
+		if float64(v.Value) > tooBig {
+			return false
+		}
+	}
 	return true
 }

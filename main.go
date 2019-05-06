@@ -33,7 +33,7 @@ func main() {
 	for range tick.C {
 		go func() {
 			if err := execute(c); err != nil {
-				log.Println("\nfailed to get ot post data:", err)
+				log.Println("\nfailed to post data:", err)
 			} else {
 				fmt.Print(".")
 			}
@@ -49,7 +49,8 @@ func execute(c *config.EcoReport) error {
 	}()
 	instantData, batteryData, err := getProperties(c)
 	if err != nil {
-		return fmt.Errorf("failed to get data from API: %s", err)
+		http.DefaultClient = &http.Client{}
+		return fmt.Errorf("got error from API: %s", err)
 	}
 	record := map[string]interface{}{
 		"time":                time.Now().UTC(),
@@ -59,7 +60,7 @@ func execute(c *config.EcoReport) error {
 	}
 	b, err := json.Marshal(record)
 	if err != nil {
-		return fmt.Errorf("ailed to marshal json from result map: %s", err)
+		return fmt.Errorf("failed to marshal json from result map: %s", err)
 	}
 	record = nil
 	instantData = nil
