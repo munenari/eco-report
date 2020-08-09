@@ -1,12 +1,11 @@
-FROM golang:1.12-alpine
+FROM golang:1.14-alpine
 
-WORKDIR /go/src/github.com/munenari/eco-report
+WORKDIR /code
 
 RUN apk update && \
     apk --no-cache add git
-RUN go get -v github.com/oxequa/realize
-RUN go get -v github.com/golang/dep/cmd/dep
+RUN go get -v github.com/pilu/fresh
 
 ENV PATH /go/bin:$PATH
 
-CMD ["sh", "-c", "dep ensure && realize start"]
+CMD ["fresh"]

@@ -6,4 +6,4 @@ services:
       context: .
     restart: always
     volumes:
-    - ./:/go/src/github.com/munenari/eco-report
+    - ./:/code
